@@ -371,17 +371,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     padding: EdgeInsets.all(5),
                     child: ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Colors.blueAccent;
-                          return _mainBackgroundColor; // Use the component's default.
-                        },
-                      ),
-                      ),
+                      style: ElevatedButton.styleFrom(primary: _mainBackgroundColor,minimumSize: Size(50, 50)),
                       onPressed: () => _getACard(false,'Q'),
                       child: Text(
-                        "Q",
+                        "Quebra \n Gelo",
                         style: TextStyle(fontSize: 20.0),
                       ),
                     ),
@@ -389,39 +382,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   Container(
                     padding: EdgeInsets.all(5),
                     child: ElevatedButton(
-                          style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                              (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.pressed))
-                                  return Colors.blueAccent;
-                                return _mainBackgroundColor; // Use the component's default.
-                              },
-                            ),
+                          style: ElevatedButton.styleFrom(primary: _mainBackgroundColor,minimumSize: Size(50, 50)),
+                          onPressed: () => _getACard(false,'P'),
+                          child: Text(
+                            "Profunda",
+                            style: TextStyle(fontSize: 20.0),
                           ),
-                      onPressed: () => _getACard(false,'P'),
-                      child: Text(
-                        "P",
-                        style: TextStyle(fontSize: 20.0),
-                      ),
                     ),
                   ),
                   Container(
                     padding: EdgeInsets.all(5),
                     child: ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                            (Set<MaterialState> states) {
-                          if (states.contains(MaterialState.pressed))
-                            return Colors.blueAccent;
-                          return _mainBackgroundColor; // Use the component's default.
-                        },
-                      ),
-                      ),
-                     // color: _mainBackgroundColor,
+                      style: ElevatedButton.styleFrom(primary: _mainBackgroundColor,minimumSize: Size(50, 50)),
+                      // color: _mainBackgroundColor,
                      // textColor: Colors.white,
                      // padding: EdgeInsets.all(8.0),
                      // splashColor: Colors.blueAccent,
                       onPressed: () => _getACard(false,'D'),
                       child: Text(
-                        "D",
+                        "Divertida",
                         style: TextStyle(fontSize: 20.0),
                       ),
                     ),
