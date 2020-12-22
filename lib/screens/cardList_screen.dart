@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:our_cards/database_helpers.dart';
 import 'package:our_cards/screens/common.dart';
+import 'package:our_cards/screens/card_add_edit_screen.dart';
 
 
 readTextModeOn() async {
@@ -51,7 +52,14 @@ class _CardListState extends State<CardList> {
               child: CircularProgressIndicator(),
             );
           },
-        )
+        ),
+      floatingActionButton:
+      FloatingActionButton(
+        onPressed: () =>_goCardAdd(),
+        tooltip: 'Nova Carta',
+        child: Icon(Icons.add),
+        backgroundColor: mainBackgroundColor,
+      ),
     );
   }
 
@@ -60,23 +68,17 @@ class _CardListState extends State<CardList> {
       title: new Text(card.card, style: _biggerFont),
     );
   }
-       /* floatingActionButton:
-          FloatingActionButton(
-              onPressed: () =>_goCardAdd(false,''),
-              tooltip: 'Nova Carta',
-              child: Icon(Icons.add),
-              backgroundColor: mainBackgroundColor,
-            ), // This trailing comma makes auto-formatting nicer for build methods.
-    );*/
-  }
 
- /* void _goCardAdd() {
+  void _goCardAdd() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-          builder: (BuildContext context) => Settings(title: title+' - Cartas')),
+          builder: (BuildContext context) => AddEdit()),
     );
   }
+}
 
+
+/*
   _readFromDB() async {
     DatabaseHelper helper = DatabaseHelper.instance;
     int rowId = 1;
