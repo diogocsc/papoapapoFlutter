@@ -1,10 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:our_cards/cardsStorage.dart';
-import 'package:our_cards/cards.dart';
 import 'package:our_cards/screens/cardList_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:our_cards/database_helpers.dart';
 import 'package:our_cards/screens/common.dart';
 
 
@@ -68,20 +66,6 @@ class _SettingsState extends State<Settings> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: RaisedButton(
-                      child: Text('Inicializar Cartas'),
-                      onPressed: () {
-                        _saveToDB();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                //mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
                       child: Text('Listar Cartas'),
                       onPressed: () => _goCards(),
                     ),
@@ -107,26 +91,6 @@ class _SettingsState extends State<Settings> {
     prefs.setBool(key, value);
 
     setState(() {});
-  }
-
-  _saveToDB() async {
-    DatabaseHelper helper = DatabaseHelper.instance;
-    MyCard card = await helper.queryCard(2);
-    print('card: $card.toString()');
-    if (card == null){
-      for (int i=0; i< cards.length; i++) {
-        MyCard card = MyCard();
-        card.card = cards[i]['card'];
-        if (cards[i].containsKey('category')) {
-          card.category = cards[i]['category'];
-        }
-        if (cards[i].containsKey('url')) {
-          card.url = cards[i]['url'];
-        }
-        int id = await helper.insert(card);
-        print('inserted row: $id');
-      }
-    }
   }
 
 }

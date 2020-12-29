@@ -9,6 +9,8 @@ final String columnId = '_id';
 final String columnCard = 'card';
 final String columnCategory = 'category';
 final String columnURL = 'url';
+final String columnIsAsset = 'isAsset';
+
 
 
 // data model class
@@ -18,6 +20,7 @@ class MyCard {
   String card;
   String category;
   String url;
+  int isAsset;
   
   MyCard();
 
@@ -26,7 +29,9 @@ class MyCard {
     id = map[columnId];
     card = map[columnCard];
     category = map[columnCategory];
-    url = map[url];
+    url = map[columnURL];
+    isAsset = map[columnIsAsset];
+
   }
 
   // convenience method to create a Map from this MyCard object
@@ -35,6 +40,7 @@ class MyCard {
       columnCard: card,
       columnCategory: category,
       columnURL: url,
+      columnIsAsset: isAsset,
     };
     if (id != null) {
       map[columnId] = id;
@@ -81,8 +87,8 @@ class DatabaseHelper {
                 $columnId INTEGER PRIMARY KEY,
                 $columnCard TEXT NOT NULL,
                 $columnCategory TEXT NULL,
-                $columnURL TEXT NULL
-
+                $columnURL TEXT NULL,
+                $columnIsAsset BOOLEAN NOT NULL DEFAULT 0
               )
               ''');
   }
@@ -98,7 +104,7 @@ class DatabaseHelper {
   Future<MyCard> queryCard(int id) async {
     Database db = await database;
     List<Map> maps = await db.query(tableCards,
-        columns: [columnId, columnCard, columnCategory, columnURL],
+        columns: [columnId, columnCard, columnCategory, columnURL, columnIsAsset],
         where: '$columnId = ?',
         whereArgs: [id]);
     if (maps.length > 0) {
@@ -106,9 +112,29 @@ class DatabaseHelper {
     }
     return null;
   }
+  Future<List<MyCard>> queryCardsByCategory(String category) async {
+    Database db = await database;
 
-// TODO: queryAllCards()
-  Future<List<MyCard>> queryAllCards() async {
+    var res = await db.query(tableCards,
+                            columns: [columnId, columnCard, columnCategory, columnURL, columnIsAsset],
+                            where: '$columnCategory = ?',
+                            whereArgs: [category]);
+
+    List<MyCard> list =
+    res.isNotEmpty ? res.map((c) => MyCard.fromMap(c)).toList() : null;
+
+    return list;
+  }
+
+
+  Future<bool> queryCheckCardExists() async {
+    Database db = await database;
+    var res = await db.query(tableCards, limit:1);
+    return res.isNotEmpty;
+  }
+
+
+ Future<List<MyCard>> queryAllCards() async {
     Database db = await database;
 
     var res = await db.query(tableCards);
@@ -118,6 +144,14 @@ class DatabaseHelper {
 
     return list;
   }
-// TODO: delete(int id)
-// TODO: update(MyCard card)
+  Future<int> delete(int id) async {
+    Database db = await database;
+    return await db.delete(tableCards, where:"$columnId=?",whereArgs: [id]);
+  }
+
+  Future<int> update(MyCard card) async {
+    Database db = await database;
+    int id = await db.update(tableCards, {columnCard:card.card,columnCategory:card.category,columnURL:card.url},where:"$columnId=?",whereArgs: [card.id]);
+    return id;
+  }
 }

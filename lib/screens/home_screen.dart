@@ -5,8 +5,11 @@ import 'package:our_cards/screens/settings_screen.dart';
 import 'package:our_cards/screens/game_screen.dart';
 import 'package:our_cards/screens/common.dart';
 
+var myDir;
+
 
 class MyApp extends StatelessWidget {
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,14 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+
+  @override
+  void initState() {
+    super.initState();
+    bootstrapCards();
+    getOurCards();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +140,7 @@ class _MenuState extends State<Menu> {
   void _goSettings() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-          builder: (BuildContext context) => Settings(storage: CardsStorage(), title: title+' - Settings')),
+          builder: (BuildContext context) => Settings(storage: CardsStorage(), title: title+' - Configurações')),
     );
   }
 }

@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:our_cards/database_helpers.dart';
@@ -66,13 +67,21 @@ class _CardListState extends State<CardList> {
   Widget _buildRow(MyCard card) {
     return new ListTile(
       title: new Text(card.card, style: _biggerFont),
+      trailing: Icon(Icons.keyboard_arrow_right),
+      onTap: () {
+        Navigator.push(context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => AddEditScreen(myCard: card,)),
+        );
+      }
     );
   }
 
   void _goCardAdd() {
+   MyCard myEmptyCard;
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-          builder: (BuildContext context) => AddEdit()),
+          builder: (BuildContext context) => AddEditScreen(myCard: myEmptyCard)),
     );
   }
 }

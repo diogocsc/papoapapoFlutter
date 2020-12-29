@@ -1,3 +1,7 @@
+
+
+
+
 final cards = [
   {'card':'Se fosses um animal que animal gostavas de ser ? Porquê?',"url":"images/sefossesanimal.png",'category':'Q'},
   {'card':'Se fosses uma planta, qual serias? Porquê ?',"url":"images/sefossesplanta.png",'category':'Q'},

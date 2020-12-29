@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:our_cards/cards.dart';
 import 'package:our_cards/screens/common.dart';
+import 'package:our_cards/database_helpers.dart';
 
 import 'dart:math';
 
@@ -11,9 +13,12 @@ int  random(min, max){
   return min + rn.nextInt(max - min);
 }
 var _cardImage;
+var _fileImage;
 
 final _emptyCardText='Não há mais cartas';
 final _emptyCardTextForCategory='Não há mais cartas para esta categoria';
+
+
 
 
 class MyHomePage extends StatefulWidget {
@@ -38,20 +43,32 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   int pop;
-  List<Map<String, String>> _cardsAuxQ = List.from(cardsQ);
-  List<Map<String, String>> _cardsAuxP = List.from(cardsP);
-  List<Map<String, String>> _cardsAuxD = List.from(cardsD);
-  List<Map<String, String>> _cardsAux = List.from(cards);
+  List<MyCard> _cardsAuxQ;
+  List<MyCard> _cardsAuxP;
+  List<MyCard> _cardsAuxD;
+  List<MyCard> _cardsAux;
   String _cardText = mode != 'category' ? 'Prima a seta em baixo para começar' : 'Escolha a categoria acima';
-
-
   bool _hasCardImage=false;
-//  @override
-  // void initState() {
-  //   _cardsAux = List.from(_cards);
-  //   super.initState();
-  // }
-  void _getCard (List<Map<String, String>> cardList) {
+  int isAsset;
+
+
+  @override
+  void initState() {
+    super.initState();
+    getOurCards();
+    _cardsAuxQ = List.from(ourCardsQ);
+    _cardsAuxP = List.from(ourCardsP);
+    _cardsAuxD = List.from(ourCardsD);
+    _cardsAux = List.from(ourCards);
+  }
+  void _getFileImage (path)  {
+      // Either the permission was already granted before or the user just granted it
+      setState(() {
+        _fileImage = FileImage(File(path));
+      });
+    }
+
+  void _getCard (List<MyCard> cardList) {
     if (cardList.length == 0) {
       if (mode == 'category') {
         if (_cardsAuxD.isNotEmpty || _cardsAuxP.isNotEmpty || _cardsAuxQ.isNotEmpty) {
@@ -65,10 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     else {
       pop = random(0, cardList.length);
-      _cardText = cardList[pop]['card'];
-      if (cardList[pop].containsKey('url') && ! textModeOn) {
+      isAsset = cardList[pop].isAsset;
+      _cardText = cardList[pop].card;
+      if(isAsset == 0) _getFileImage(cardList[pop].url);
+      if (cardList[pop].url != null && cardList[pop].url.isNotEmpty && ! textModeOn && (isAsset == 1 || isAsset == 0 && _fileImage != null)) {
         _cardImage = PhotoView(
-          imageProvider: AssetImage(cardList[pop]['url']),
+          imageProvider: isAsset == 1 ? AssetImage(cardList[pop].url) : _fileImage,
           backgroundDecoration: BoxDecoration(color: Colors.transparent),
           customSize: MediaQuery
               .of(context)
@@ -90,13 +109,13 @@ class _MyHomePageState extends State<MyHomePage> {
       if(isReset){
         if (mode == 'category'){
           _cardsAuxQ.clear();
-          _cardsAuxQ.addAll(cardsQ);
+          _cardsAuxQ.addAll(ourCardsQ);
           _cardsAuxP.clear();
-          _cardsAuxP.addAll(cardsP);
+          _cardsAuxP.addAll(ourCardsP);
           _cardsAuxD.clear();
-          _cardsAuxD.addAll(cardsD);
+          _cardsAuxD.addAll(ourCardsD);
         }
-        else _cardsAux.addAll(cards);
+        else _cardsAux.addAll(ourCards);
         _cardText = mode != 'category' ? 'Prima a seta em baixo para começar' : 'Escolha a categoria acima';
       }
       else {
