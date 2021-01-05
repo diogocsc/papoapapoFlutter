@@ -151,7 +151,7 @@ class DatabaseHelper {
 
   Future<int> update(MyCard card) async {
     Database db = await database;
-    int id = await db.update(tableCards, {columnCard:card.card,columnCategory:card.category,columnURL:card.url},where:"$columnId=?",whereArgs: [card.id]);
+    int id = await db.update(tableCards, {columnCard:card.card,columnCategory:card.category,columnURL:card.url,columnIsAsset:card.isAsset},where:"$columnId=?",whereArgs: [card.id]);
     return id;
   }
 }

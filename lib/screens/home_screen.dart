@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:our_cards/cardsStorage.dart';
+import 'package:our_cards/screens/cardList_screen.dart';
 import 'package:our_cards/screens/settings_screen.dart';
 import 'package:our_cards/screens/game_screen.dart';
 import 'package:our_cards/screens/common.dart';
@@ -49,6 +50,15 @@ class _MenuState extends State<Menu> {
         appBar: AppBar(
           title: Text(title),
           backgroundColor: mainBackgroundColor,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+              ),
+              onPressed: () => _goSettings(),
+            )
+          ],
         ),
         body:
         Column(
@@ -72,7 +82,7 @@ class _MenuState extends State<Menu> {
                 splashColor: Colors.blueAccent,
                 onPressed: () => _goGame('mix'),
                 child: Text(
-                  "Mix",
+                  "Misto",
                   style: TextStyle(fontSize: 20.0),
                 ),
               ),
@@ -93,6 +103,13 @@ class _MenuState extends State<Menu> {
                 ),
               ),
             ),
+            const Divider(
+              color: Colors.black,
+              height: 20,
+              thickness: 0.3,
+              indent: 60,
+              endIndent: 60,
+            ),
             Container(
               padding: EdgeInsets.all(5),
               child: FlatButton(
@@ -102,9 +119,9 @@ class _MenuState extends State<Menu> {
                 textColor: Colors.white,
                 padding: EdgeInsets.all(8.0),
                 splashColor: Colors.blueAccent,
-                onPressed: () => _goSettings(),
+                onPressed: () => _goCards(),
                 child: Text(
-                  "Configurações",
+                  "As Minhas Cartas",
                   style: TextStyle(fontSize: 20.0),
                 ),
               ),
@@ -141,6 +158,12 @@ class _MenuState extends State<Menu> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
           builder: (BuildContext context) => Settings(storage: CardsStorage(), title: title+' - Configurações')),
+    );
+  }
+  void _goCards() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+          builder: (BuildContext context) => CardList(title: title+' - Cartas')),
     );
   }
 }

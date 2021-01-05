@@ -116,7 +116,11 @@ class _AddEditScreenState extends State<AddEditScreen> {
                 ),
                 Expanded(
                   child: image == null
-                      ? new Text('No image selected.')
+                      ? _urlController.text == ''
+                          ? Text('Nenhuma imagem selecionada.')
+                          : _urlController.text.substring(0,1)=='i'
+                              ? Image.asset(_urlController.text)
+                              : Image.file(File(_urlController.text))
                       : new Image.file(File(image.path)),
                 ),
                 TextFormField(
@@ -158,7 +162,10 @@ class _AddEditScreenState extends State<AddEditScreen> {
     myCard.card = card;
     myCard.category = category;
     myCard.url = url;
-    myCard.isAsset = 0;
+    // if url starts with i, it is implied that it starts with images, and so isAsset should be one
+    myCard.isAsset = url == ''
+                      ? 0
+                      : url.substring(0,1) == 'i' ? 1 : 0;
     if (id==0) await helper.insert(myCard);
     else await helper.update(myCard);
     Navigator.push(context,

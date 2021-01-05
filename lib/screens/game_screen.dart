@@ -47,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<MyCard> _cardsAuxP;
   List<MyCard> _cardsAuxD;
   List<MyCard> _cardsAux;
-  String _cardText = mode != 'category' ? 'Prima a seta em baixo para começar' : 'Escolha a categoria acima';
+  String _cardText = mode != 'category' ? 'Prima a seta em baixo para começar e também dar seguimento ao jogo' : 'Selecione a categoria acima, para iniciar e também dar seguimento ao jogo';
   bool _hasCardImage=false;
   int isAsset;
 
@@ -116,7 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _cardsAuxD.addAll(ourCardsD);
         }
         else _cardsAux.addAll(ourCards);
-        _cardText = mode != 'category' ? 'Prima a seta em baixo para começar' : 'Escolha a categoria acima';
+        _cardText = mode != 'category' ? 'Prima a seta em baixo para começar e também dar seguimento ao jogo' : 'Selecione a categoria acima, para iniciar e também dar seguimento ao jogo';
       }
       else {
         if (mode == 'category'){
@@ -231,7 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 padding: EdgeInsets.all(30),
                 child: Text('$_cardText',
-                  style: Theme.of(context).textTheme.headline3,
+                  style: Theme.of(context).textTheme.headline4,
                   textAlign: TextAlign.center,
                 ),
               ),
