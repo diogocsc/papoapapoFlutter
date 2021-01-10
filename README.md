@@ -1,4 +1,4 @@
-# papoapapo
+# Papo a Papo
 
 A Customizable Conversation Card Game with 3 categories: "Quebra-Gelo" (Ice-Breaking); "Profunda" (Deep); "Divertida" (Fun)
 The user can add its own cards in-app or sharing pictures from other apps.
