@@ -4,10 +4,10 @@ A Customizable Conversation Card Game with 3 categories: "Quebra-Gelo" (Ice-Brea
 The user can add its own cards in-app or sharing pictures from other apps.
 
 ## Recent Changes
-v1.0.3+2
+v1.0.3+2 (2021-01-10)
 * Fixed card loading issue on application boot
 
-v1.0.2+1
+v1.0.2+1 (2021-01-10)
 * (new feature) Allow Papo a Papo app New Card screen to be opened with a picture shared from another app.
 
 
