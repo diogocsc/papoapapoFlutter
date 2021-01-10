@@ -55,11 +55,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getOurCards();
-    _cardsAuxQ = List.from(ourCardsQ);
-    _cardsAuxP = List.from(ourCardsP);
-    _cardsAuxD = List.from(ourCardsD);
-    _cardsAux = List.from(ourCards);
+    getOurCards().then((response){
+      _cardsAuxQ = List.from(ourCardsQ);
+      _cardsAuxP = List.from(ourCardsP);
+      _cardsAuxD = List.from(ourCardsD);
+      _cardsAux = List.from(ourCards);
+    });
+
   }
   void _getFileImage (path)  {
       // Either the permission was already granted before or the user just granted it

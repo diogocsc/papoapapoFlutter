@@ -48,7 +48,6 @@ class _MenuState extends State<Menu> {
   void initState() {
     super.initState();
     bootstrapCards();
-    getOurCards();
     // For sharing images coming from outside the app while the app is in the memory
     _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
         .listen((List<SharedMediaFile> value) {
