@@ -6,6 +6,7 @@ The user can add its own cards in-app or sharing pictures from other apps.
 ## Recent Changes
 v1.0.3+2
 * Fixed card loading issue on application boot
+
 v1.0.2+1
 * (new feature) Allow Papo a Papo app New Card screen to be opened with a picture shared from another app.
 
