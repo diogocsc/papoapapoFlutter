@@ -1,10 +1,16 @@
-# our_cards
+# papoapapo
 
-A new Flutter application.
+A Customizable Conversation Card Game with 3 categories: "Quebra-Gelo" (Ice-Breaking); "Profunda" (Deep); "Divertida" (Fun)
+The user can add its own cards in-app or sharing pictures from other apps.
 
-## Getting Started
+## Recent Changes
+v1.0.2+1
+* (new feature) Allow Papo a Papo app New Card screen to be opened with a picture shared from another app.
 
-This project is a starting point for a Flutter application.
+
+## Other
+
+This project is developed with Flutter.
 
 A few resources to get you started if this is your first Flutter project:
 

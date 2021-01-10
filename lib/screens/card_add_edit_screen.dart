@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:our_cards/screens/common.dart';
-import 'package:our_cards/database_helpers.dart';
-import 'package:our_cards/screens/cardList_screen.dart';
+import 'package:papoapapo/screens/common.dart';
+import 'package:papoapapo/database_helpers.dart';
+import 'package:papoapapo/screens/cardList_screen.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -36,10 +36,35 @@ class _AddEditScreenState extends State<AddEditScreen> {
   MyCard myCard;
   PickedFile image;
 
-   _AddEditScreenState(this.myCard){
-     _cardController = TextEditingController(text:myCard != null ? myCard.card : '');
-     _categoryController = TextEditingController(text: myCard != null ? myCard.category : '');
-     _urlController = TextEditingController(text: myCard != null ? myCard.url : '');
+  _AddEditScreenState(this.myCard){
+    _cardController = TextEditingController(text:myCard != null ? myCard.card : '');
+    _categoryController = TextEditingController(text: myCard != null ? myCard.category : '');
+    _urlController = TextEditingController(text: myCard != null ? myCard.url : '');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Copies file from cache to external directory, if file is coming from an externalApp
+    // which is defined by having card text empty and url filled
+    if (_cardController.text == '' && _urlController.text !='') copyFile();
+   }
+
+   copyFile() async {
+//     print('About to copy file');
+     File img = File(myCard.url);
+     if (img != null) {
+       final _dir = await getExternalStorageDirectory();
+       String filename = basename(img.path);
+       File file;
+       if (await Permission.storage.request().isGranted) {
+         file = await File(img.path).copy(_dir.path +'/$filename');
+       }
+       setState(() {
+         _urlController.text = file.path;
+       });
+
+     }
    }
 
   galleryConnect() async {
@@ -109,7 +134,7 @@ class _AddEditScreenState extends State<AddEditScreen> {
                   ),
                 ),
                 ElevatedButton(
-                    child: Text('Pick Image'),
+                    child: Text('Selecionar Imagem'),
                     onPressed: () {
                       galleryConnect();
                     },
@@ -137,18 +162,18 @@ class _AddEditScreenState extends State<AddEditScreen> {
                     if (_formKey.currentState.validate()) {
                       // If the form is valid, display a snackbar. In the real world,
                       // you'd often call a server or save the information in a database.
-                      _saveRecord(widget.myCard != null ? widget.myCard.id : 0, _cardController.text, _categoryController.text, _urlController.text, context);
+                      _saveRecord(widget.myCard != null && widget.myCard.id != null ? widget.myCard.id : 0, _cardController.text, _categoryController.text, _urlController.text, context);
                     }
                   },
-                  child: Text('Submit'),
+                  child: Text('Submeter'),
                 ),
                 Visibility(
-                  visible: widget.myCard != null,
+                  visible: widget.myCard != null && widget.myCard.id != null,
                   child:ElevatedButton(
                     onPressed: () {
                         _deleteRecord(widget.myCard.id, context);
                     },
-                    child: Text('Delete'),
+                    child: Text('Apagar'),
                   ),
                 ),
               ]

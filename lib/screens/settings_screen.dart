@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:our_cards/cardsStorage.dart';
-import 'package:our_cards/screens/cardList_screen.dart';
+import 'package:papoapapo/cardsStorage.dart';
+import 'package:papoapapo/screens/cardList_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:our_cards/screens/common.dart';
+import 'package:papoapapo/screens/common.dart';
 
 
 readTextModeOn() async {

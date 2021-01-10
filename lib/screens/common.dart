@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:our_cards/database_helpers.dart';
-import 'package:our_cards/cards.dart';
+import 'package:papoapapo/database_helpers.dart';
+import 'package:papoapapo/cards.dart';
 
 
 bool textModeOn= false;

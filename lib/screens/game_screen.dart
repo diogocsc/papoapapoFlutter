@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:our_cards/screens/common.dart';
-import 'package:our_cards/database_helpers.dart';
+import 'package:papoapapo/screens/common.dart';
+import 'package:papoapapo/database_helpers.dart';
 
 import 'dart:math';
 

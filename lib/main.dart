@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:our_cards/screens/home_screen.dart';
+import 'package:papoapapo/screens/home_screen.dart';
 
 
 void main() {

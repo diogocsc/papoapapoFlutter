@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:our_cards/cardsStorage.dart';
-import 'package:our_cards/screens/cardList_screen.dart';
-import 'package:our_cards/screens/settings_screen.dart';
-import 'package:our_cards/screens/game_screen.dart';
-import 'package:our_cards/screens/common.dart';
+import 'package:papoapapo/cardsStorage.dart';
+import 'package:papoapapo/database_helpers.dart';
+import 'package:papoapapo/screens/cardList_screen.dart';
+import 'package:papoapapo/screens/card_add_edit_screen.dart';
+import 'package:papoapapo/screens/settings_screen.dart';
+import 'package:papoapapo/screens/game_screen.dart';
+import 'package:papoapapo/screens/common.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+
 
 var myDir;
 
@@ -35,12 +41,52 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  StreamSubscription _intentDataStreamSubscription;
+  List<SharedMediaFile> _sharedFiles;
 
   @override
   void initState() {
     super.initState();
     bootstrapCards();
     getOurCards();
+    // For sharing images coming from outside the app while the app is in the memory
+    _intentDataStreamSubscription = ReceiveSharingIntent.getMediaStream()
+        .listen((List<SharedMediaFile> value) {
+      setState(() {
+        _sharedFiles = value;
+        print("Shared 1:" + (_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
+        if (_sharedFiles != null) _goCardAdd((_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
+
+      });
+
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      setState(() {
+        _sharedFiles = value;
+        print("Shared 2:" + (_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
+        if (_sharedFiles != null) _goCardAdd((_sharedFiles?.map((f) => f.path)?.join(",") ?? ""));
+
+      });
+
+    });
+
+  }
+  @override
+  void dispose() {
+    _intentDataStreamSubscription.cancel();
+    super.dispose();
+  }
+  void _goCardAdd(path) {
+    MyCard myEmptyCard = new MyCard();
+    myEmptyCard.url=path;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+          builder: (BuildContext context) => AddEditScreen(myCard: myEmptyCard)),
+    );
   }
 
 

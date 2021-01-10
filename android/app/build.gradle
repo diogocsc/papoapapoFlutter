@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.ourcards.papoapapo"
+        applicationId "com.papoapapo"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
@@ -73,22 +73,22 @@ android {
 
         }
     }
-  /*  flavorDimensions "version"
-    productFlavors {
-        papoapapo {
-            // Assigns this product flavor to the "version" flavor dimension.
-            // If you are using only one dimension, this property is optional,
-            // and the plugin automatically assigns all the module's flavors to
-            // that dimension.
-            dimension "version"
-            applicationIdSuffix ".papoapapo"
-            versionNameSuffix "-papoapapo"
-            signingConfig signingConfigs.release
+    /*  flavorDimensions "version"
+      productFlavors {
+          papoapapo {
+              // Assigns this product flavor to the "version" flavor dimension.
+              // If you are using only one dimension, this property is optional,
+              // and the plugin automatically assigns all the module's flavors to
+              // that dimension.
+              dimension "version"
+              applicationIdSuffix ".papoapapo"
+              versionNameSuffix "-papoapapo"
+              signingConfig signingConfigs.release
 
-        }
-    }
+          }
+      }
 
-   */
+     */
 }
 
 flutter {

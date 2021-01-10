@@ -2,9 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:our_cards/database_helpers.dart';
-import 'package:our_cards/screens/common.dart';
-import 'package:our_cards/screens/card_add_edit_screen.dart';
+import 'package:papoapapo/database_helpers.dart';
+import 'package:papoapapo/screens/common.dart';
+import 'package:papoapapo/screens/card_add_edit_screen.dart';
 
 
 readTextModeOn() async {
