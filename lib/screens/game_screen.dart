@@ -17,7 +17,16 @@ var _fileImage;
 
 final _emptyCardText='Não há mais cartas';
 final _emptyCardTextForCategory='Não há mais cartas para esta categoria';
-
+final _instructions_mix = 'Instruções \n \n '+
+    '1 - Prima a seta no canto inferior direito para prosseguir com o jogo \n'+
+    '2 - Responda à pergunta ou realize a dinâmica proposta \n'+
+    '3 - Passe a vez e o telefone ao próximo jogador (P.ex. passe à pessoa à sua esquerda ou escolha a quem quer passar) \n'+
+    '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
+final _instructions_category = 'Instruções \n \n'+
+                                '1 - Selecione a categoria acima para prosseguir com o jogo \n'+
+                                '2 - Responda à pergunta ou realize a dinâmica proposta \n'+
+                                '3 - Passe a vez e o telefone ao próximo jogador (P.ex. passe à pessoa à sua esquerda ou escolha a quem quer passar) \n'+
+                                '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
 
 
 
@@ -47,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<MyCard> _cardsAuxP;
   List<MyCard> _cardsAuxD;
   List<MyCard> _cardsAux;
-  String _cardText = mode != 'category' ? 'Prima a seta em baixo para começar e também dar seguimento ao jogo' : 'Selecione a categoria acima, para iniciar e também dar seguimento ao jogo';
+  String _cardText = mode != 'category' ? _instructions_mix : _instructions_category;
   bool _hasCardImage=false;
   int isAsset;
 
@@ -118,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _cardsAuxD.addAll(ourCardsD);
         }
         else _cardsAux.addAll(ourCards);
-        _cardText = mode != 'category' ? 'Prima a seta em baixo para começar e também dar seguimento ao jogo' : 'Selecione a categoria acima, para iniciar e também dar seguimento ao jogo';
+        _cardText = mode != 'category' ? _instructions_mix : _instructions_category;
       }
       else {
         if (mode == 'category'){
@@ -233,8 +242,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 padding: EdgeInsets.all(30),
                 child: Text('$_cardText',
-                  style: Theme.of(context).textTheme.headline4,
-                  textAlign: TextAlign.center,
+                  style: _cardText != _instructions_mix && _cardText != _instructions_category ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+                  textAlign: _cardText != _instructions_mix && _cardText != _instructions_category ? TextAlign.center : TextAlign.justify,
                 ),
               ),
             ),
