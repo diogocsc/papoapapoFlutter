@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:papoapapo/screens/common.dart';
 import 'package:papoapapo/database_helpers.dart';
+import 'package:share_files_and_screenshot_widgets/share_files_and_screenshot_widgets.dart';
 
 import 'dart:math';
 
@@ -17,12 +19,12 @@ var _fileImage;
 
 final _emptyCardText='Não há mais cartas';
 final _emptyCardTextForCategory='Não há mais cartas para esta categoria';
-final _instructions_mix = 'Instruções \n \n '+
+final _instructionsMix = 'Instruções \n \n '+
     '1 - Prima a seta no canto inferior direito para prosseguir com o jogo \n'+
     '2 - Responda à pergunta ou realize a dinâmica proposta \n'+
     '3 - Passe a vez e o telefone ao próximo jogador (P.ex. passe à pessoa à sua esquerda ou escolha a quem quer passar) \n'+
     '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
-final _instructions_category = 'Instruções \n \n'+
+final __instructionsCategory = 'Instruções \n \n'+
                                 '1 - Selecione a categoria acima para prosseguir com o jogo \n'+
                                 '2 - Responda à pergunta ou realize a dinâmica proposta \n'+
                                 '3 - Passe a vez e o telefone ao próximo jogador (P.ex. passe à pessoa à sua esquerda ou escolha a quem quer passar) \n'+
@@ -56,9 +58,13 @@ class _MyHomePageState extends State<MyHomePage> {
   List<MyCard> _cardsAuxP;
   List<MyCard> _cardsAuxD;
   List<MyCard> _cardsAux;
-  String _cardText = mode != 'category' ? _instructions_mix : _instructions_category;
+  String _cardText = mode != 'category' ? _instructionsMix : __instructionsCategory;
   bool _hasCardImage=false;
   int isAsset;
+  GlobalKey previewContainer = new GlobalKey();
+  int originalSize = 800;
+
+
 
 
   @override
@@ -70,8 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _cardsAuxD = List.from(ourCardsD);
       _cardsAux = List.from(ourCards);
     });
-
   }
+
   void _getFileImage (path)  {
       // Either the permission was already granted before or the user just granted it
       setState(() {
@@ -127,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _cardsAuxD.addAll(ourCardsD);
         }
         else _cardsAux.addAll(ourCards);
-        _cardText = mode != 'category' ? _instructions_mix : _instructions_category;
+        _cardText = mode != 'category' ? _instructionsMix : __instructionsCategory;
       }
       else {
         if (mode == 'category'){
@@ -171,8 +177,33 @@ class _MyHomePageState extends State<MyHomePage> {
           // the App.build method, and use it to set our appbar title.
           title: Text(widget.title),
           backgroundColor: mainBackgroundColor,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.share,
+                color: Colors.white,
+              ),
+              onPressed: () async {
+                if (await Permission.storage.request().isGranted) {
+                  ShareFilesAndScreenshotWidgets().shareScreenshot(
+                    previewContainer,
+                    originalSize,
+                    "Papo a Papo",
+                    "papoapapo.png",
+                    "image/png",
+                    text: "Jogamos ao Papo a Papo? \n $_cardText");
+                }
+              },
+            )
+          ],
         ),
         body:
+    RepaintBoundary(
+    key: previewContainer,
+    child:
+        Container(
+    color:Colors.white,
+    child:
         Column(
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -190,8 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
+
           children: <Widget>[
-            Visibility(
+        Visibility(
               visible: mode=='category',
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -242,8 +274,8 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 padding: EdgeInsets.all(30),
                 child: Text('$_cardText',
-                  style: _cardText != _instructions_mix && _cardText != _instructions_category ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
-                  textAlign: _cardText != _instructions_mix && _cardText != _instructions_category ? TextAlign.center : TextAlign.justify,
+                  style: _cardText != _instructionsMix && _cardText != __instructionsCategory ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+                  textAlign: _cardText != _instructionsMix && _cardText != __instructionsCategory ? TextAlign.center : TextAlign.justify,
                 ),
               ),
             ),
@@ -298,6 +330,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
+      ),
+    ),
         floatingActionButton:
         Visibility(
           visible: _cardText != _emptyCardText && mode != 'category',
