@@ -4,6 +4,9 @@ A Customizable Conversation Card Game with 3 categories: "Quebra-Gelo" (Ice-Brea
 The user can add its own cards in-app or sharing pictures from other apps.
 
 ## Recent Changes
+
+v1.0.6+1 (2021-02-05)
+* Updated image set to more quality images. replaced surprise card to more meaningful text.
 v1.0.5+3 (2021-01-28)
 * Commented splash screen meta tag in AndroidManifest, in order to test support for Android 5
 v1.0.5+2 (2021-01-23)
