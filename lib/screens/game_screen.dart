@@ -20,14 +20,14 @@ var _fileImage;
 final _emptyCardText='Não há mais cartas';
 final _emptyCardTextForCategory='Não há mais cartas para esta categoria';
 final _instructionsMix = 'Instruções \n \n '+
-    '1 - Prima a seta no canto inferior direito para prosseguir com o jogo \n'+
-    '2 - Responda à pergunta ou realize a dinâmica proposta \n'+
-    '3 - Passe a vez e o telefone ao próximo jogador (P.ex. passe à pessoa à sua esquerda ou escolha a quem quer passar) \n'+
+    '1 - Prima a seta no canto inferior direito para prosseguir com o jogo \n \n'+
+    '2 - Responda à pergunta ou realize a dinâmica proposta \n \n'+
+    '3 - Passe a vez e o telefone ao próximo jogador \n \n'+
     '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
 final __instructionsCategory = 'Instruções \n \n'+
-                                '1 - Selecione a categoria acima para prosseguir com o jogo \n'+
-                                '2 - Responda à pergunta ou realize a dinâmica proposta \n'+
-                                '3 - Passe a vez e o telefone ao próximo jogador (P.ex. passe à pessoa à sua esquerda ou escolha a quem quer passar) \n'+
+                                '1 - Selecione a categoria acima para prosseguir com o jogo \n \n'+
+                                '2 - Responda à pergunta ou realize a dinâmica proposta \n \n'+
+                                '3 - Passe a vez e o telefone ao próximo jogador \n \n'+
                                 '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
 
 
