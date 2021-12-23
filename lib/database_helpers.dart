@@ -112,6 +112,13 @@ class DatabaseHelper {
     }
     return null;
   }
+  // checkPNGCards is only due to a breaking change where asset images were shifted to jpg
+  Future<bool> checkPNGCards() async {
+    Database db = await database;
+    var maps = await db.query(tableCards, where: '$columnIsAsset = 1 and $columnURL like "%.png"',limit:1);
+    print("checkPNGCards: "+maps.isNotEmpty.toString());
+    return maps.isNotEmpty;
+  }
   Future<List<MyCard>> queryCardsByCategory(String category) async {
     Database db = await database;
 
@@ -154,4 +161,15 @@ class DatabaseHelper {
     int id = await db.update(tableCards, {columnCard:card.card,columnCategory:card.category,columnURL:card.url,columnIsAsset:card.isAsset},where:"$columnId=?",whereArgs: [card.id]);
     return id;
   }
+// updateAllAssetsToJPG is used only for the update from version 1.0.5+3 to 1.0.6+4
+  Future<void> updateAllAssetsToJPG() async {
+    Database db = await database;
+    await db.execute('''
+              UPDATE $tableCards
+              SET $columnURL = REPLACE($columnURL,".png",".jpg")
+              WHERE $columnIsAsset = 1
+              ''');
+   // await db.update(tableCards, {columnURL:"replace($columnURL,'.png','.jpg')"},where:"$columnIsAsset=1");
+  }
+
 }

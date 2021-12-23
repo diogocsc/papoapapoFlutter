@@ -2,8 +2,13 @@
 
 A Customizable Conversation Card Game with 3 categories: "Quebra-Gelo" (Ice-Breaking); "Profunda" (Deep); "Divertida" (Fun)
 The user can add its own cards in-app or sharing pictures from other apps.
+The new online version is connected to the Papo a Papo deck on https://cardx.vercel.app
 
 ## Recent Changes
+v1.0.8+1 (2021-12-23)
+* (new feature) added Online game mode and updated instructions
+v1.0.7+6 (2021-02-11)
+* added logic to replace png assets for jpg assets on home screen load, if there is any.
 v1.0.6+5 (2021-02-05)
 * added a paragraph between instructions lines. removed example from step 3.
 v1.0.6+4 (2021-02-05)

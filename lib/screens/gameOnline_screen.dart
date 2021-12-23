@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:papoapapo/screens/common.dart';
-import 'package:papoapapo/database_helpers.dart';
 import 'package:share_files_and_screenshot_widgets/share_files_and_screenshot_widgets.dart';
+import 'package:papoapapo/cardsOnline.dart';
 
 import 'dart:math';
 
@@ -15,10 +16,9 @@ int  random(min, max){
   return min + rn.nextInt(max - min);
 }
 var _cardImage;
-var _fileImage;
+var _onlineImage;
 
 final _emptyCardText='Não há mais cartas';
-final _emptyCardTextForCategory='Não há mais cartas para esta categoria';
 final _instructionsMix = 'Instruções \n \n '+
     '1 - Prima a seta no canto inferior direito para prosseguir com o jogo \n \n'+
     '2 - Leia em voz alta e depois Responda à pergunta ou realize a dinâmica proposta \n \n'+
@@ -26,14 +26,14 @@ final _instructionsMix = 'Instruções \n \n '+
     '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
 final __instructionsCategory = 'Instruções \n \n'+
                                 '1 - Selecione a categoria acima para prosseguir com o jogo \n \n'+
-                                '2 - Leia em voz alta e depois Responda à pergunta ou realize a dinâmica proposta \n \n'+
+                                '2 - Responda à pergunta ou realize a dinâmica proposta \n \n'+
                                 '3 - Passe a vez e o telefone ao próximo jogador \n \n'+
                                 '4 - O próximo jogador recomeça do passo 1 ou do passo 2, consoante quiser, ou fôr definido inicialmente pelo grupo';
 
 
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class MyOnlineGame extends StatefulWidget {
+  MyOnlineGame({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -48,62 +48,65 @@ class MyHomePage extends StatefulWidget {
 
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyOnlineGameState createState() => _MyOnlineGameState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyOnlineGameState extends State<MyOnlineGame> {
 
-  int pop;
-  List<MyCard> _cardsAuxQ;
-  List<MyCard> _cardsAuxP;
-  List<MyCard> _cardsAuxD;
-  List<MyCard> _cardsAux;
+  int pop=0;
+  List<OnlineCard> _cardsAux;
   String _cardText = mode != 'category' ? _instructionsMix : __instructionsCategory;
   bool _hasCardImage=false;
   int isAsset;
   GlobalKey previewContainer = new GlobalKey();
   int originalSize = 800;
+  Future<List<OnlineCard>> futureCards;
 
 
 
   @override
   void initState() {
     super.initState();
-    getOurCards().then((response){
-      _cardsAuxQ = List.from(ourCardsQ);
-      _cardsAuxP = List.from(ourCardsP);
-      _cardsAuxD = List.from(ourCardsD);
-      _cardsAux = List.from(ourCards);
+    Timer.run(() {
+      try {
+        InternetAddress.lookup('google.com').then((result) {
+          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            getOnlineCards().then((response){
+              _cardsAux = List.from(onlineCards);
+            });
+          } else {
+            _showDialog(); // show dialog
+          }
+        }).catchError((error) {
+          _showDialog(); // show dialog
+        });
+      } on SocketException catch (_) {
+        _showDialog();
+        print('not connected'); // show dialog
+      }
     });
+
+
   }
 
-  void _getFileImage (path)  {
+  void _getOnlineImage (url)  {
       // Either the permission was already granted before or the user just granted it
       setState(() {
-        _fileImage = FileImage(File(path));
+        _onlineImage = NetworkImage(url);
       });
     }
 
-  void _getCard (List<MyCard> cardList) {
+  void _getCard (List<OnlineCard> cardList) {
     if (cardList.length == 0) {
-      if (mode == 'category') {
-        if (_cardsAuxD.isNotEmpty || _cardsAuxP.isNotEmpty || _cardsAuxQ.isNotEmpty) {
-          _cardText = _emptyCardTextForCategory;
-        }
-        else _cardText = _emptyCardText;
-
-      }
-      else
         _cardText = _emptyCardText;
     }
     else {
       pop = random(0, cardList.length);
-      isAsset = cardList[pop].isAsset;
       _cardText = cardList[pop].card;
-      if(isAsset == 0) _getFileImage(cardList[pop].url);
-      if (cardList[pop].url != null && cardList[pop].url.isNotEmpty && ! textModeOn && (isAsset == 1 || isAsset == 0 && _fileImage != null)) {
+      if (cardList[pop].url != null && cardList[pop].url.isNotEmpty && ! textModeOn ) {
+        _getOnlineImage(cardList[pop].url);
         _cardImage = PhotoView(
-          imageProvider: isAsset == 1 ? AssetImage(cardList[pop].url) : _fileImage,
+          imageProvider: _onlineImage,
           backgroundDecoration: BoxDecoration(color: Colors.transparent),
           customSize: MediaQuery
               .of(context)
@@ -114,7 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _getACard(bool isReset, String category) {
+  void _getACard(bool isReset) {
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -123,43 +126,27 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _hasCardImage=false;
       if(isReset){
-        if (mode == 'category'){
-          _cardsAuxQ.clear();
-          _cardsAuxQ.addAll(ourCardsQ);
-          _cardsAuxP.clear();
-          _cardsAuxP.addAll(ourCardsP);
-          _cardsAuxD.clear();
-          _cardsAuxD.addAll(ourCardsD);
-        }
-        else _cardsAux.addAll(ourCards);
+        _cardsAux.addAll(onlineCards);
         _cardText = mode != 'category' ? _instructionsMix : __instructionsCategory;
       }
-      else {
-        if (mode == 'category'){
-          switch(category){
-            case 'Q': {
-              _getCard(_cardsAuxQ);
-              if (_cardsAuxQ.isNotEmpty) _cardsAuxQ.removeAt(pop);
-            }
-            break;
-            case 'P': {
-              _getCard(_cardsAuxP);
-              if(_cardsAuxP.isNotEmpty) _cardsAuxP.removeAt(pop);
-            }
-            break;
-            case 'D': {
-              _getCard(_cardsAuxD);
-              if(_cardsAuxD.isNotEmpty) _cardsAuxD.removeAt(pop);
-            }
-            break;
-          }
+      else if(_cardsAux != null){
+         _getCard(_cardsAux);
+          if(_cardsAux != null && _cardsAux.isNotEmpty) _cardsAux.removeAt(pop);
         }
-        else {
-          _getCard(_cardsAux);
-          if(_cardsAux.isNotEmpty) _cardsAux.removeAt(pop);
-        }
-      }
+
     });
+  }
+
+  void _showDialog() {
+    // dialog implementation
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Oops! Parece que está sem Internet"),
+        content: Text("Pode querer sair agora da aplicação"),
+        actions: <Widget>[FlatButton(child: Text("SAIR"), onPressed: ()=>SystemChannels.platform.invokeMethod('SystemNavigator.pop'))],
+      ),
+    );
   }
 
   @override
@@ -222,51 +209,6 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
 
           children: <Widget>[
-        Visibility(
-              visible: mode=='category',
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: mainBackgroundColor,minimumSize: Size(50, 50)),
-                        onPressed: () => _getACard(false,'Q'),
-                        child: Text(
-                          "Quebra \n Gelo",
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: mainBackgroundColor,minimumSize: Size(50, 50)),
-                        onPressed: () => _getACard(false,'P'),
-                        child: Text(
-                          "Profunda",
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(primary: mainBackgroundColor,minimumSize: Size(50, 50)),
-                        // color: mainBackgroundColor,
-                        // textColor: Colors.white,
-                        // padding: EdgeInsets.all(8.0),
-                        // splashColor: Colors.blueAccent,
-                        onPressed: () => _getACard(false,'D'),
-                        child: Text(
-                          "Divertida",
-                          style: TextStyle(fontSize: 20.0),
-                        ),
-                      ),
-                    )
-                  ]
-              ),
-            ),
             Visibility(
               visible: _hasCardImage==false,
               child:
@@ -282,12 +224,46 @@ class _MyHomePageState extends State<MyHomePage> {
                 visible: _hasCardImage,
                 child:
                 Expanded(
-                    child:
-                    Container(
+                    child: /*FutureBuilder<List<OnlineCard>>(
+                      future: fetchCards(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GridView.builder(
+                                  itemCount: snapshot.data.length,
+                                  gridDelegate:SliverGridDelegateWithFixedCrossAxisCount( crossAxisCount: 2,),
+                                  itemBuilder:  (BuildContext context, int i){
+                                    return Card(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(width: 0.5,color: Colors.grey)
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Text(snapshot.data[i].card,
+                                                style: _cardText != _instructionsMix && _cardText != __instructionsCategory ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.headline6,
+                                                textAlign: _cardText != _instructionsMix && _cardText != __instructionsCategory ? TextAlign.center : TextAlign.justify,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              )
+                          );
+                        } else if (snapshot.hasError) {
+                          return Text('${snapshot.error}');
+                        }
+                    */Container(
                       child: _cardImage,
-                    )
+                    )   // By default, show a loading spinner.)
+                       // return const CircularProgressIndicator();
                 )
-            ),
+              ),
             Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -300,7 +276,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           textColor: Colors.white,
                           padding: EdgeInsets.all(8.0),
                           splashColor: Colors.blueAccent,
-                          onPressed: () => _getACard(true,''),
+                          onPressed: () => _getACard(true),
                           child: Text(
                             "Reiniciar",
                             style: TextStyle(fontSize: 20.0),
@@ -335,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Visibility(
           visible: _cardText != _emptyCardText && mode != 'category',
           child:FloatingActionButton(
-            onPressed: () =>_getACard(false,''),
+            onPressed: () =>_getACard(false),
             tooltip: 'Próxima Carta',
             child: Icon(Icons.arrow_forward),
             backgroundColor: mainBackgroundColor,

@@ -8,6 +8,7 @@ import 'package:papoapapo/screens/cardList_screen.dart';
 import 'package:papoapapo/screens/card_add_edit_screen.dart';
 import 'package:papoapapo/screens/settings_screen.dart';
 import 'package:papoapapo/screens/game_screen.dart';
+import 'package:papoapapo/screens/gameOnline_screen.dart';
 import 'package:papoapapo/screens/common.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
@@ -125,6 +126,22 @@ class _MenuState extends State<Menu> {
                 textColor: Colors.white,
                 padding: EdgeInsets.all(8.0),
                 splashColor: Colors.blueAccent,
+                onPressed: () => _goGame('online'),
+                child: Text(
+                  "Online",
+                  style: TextStyle(fontSize: 20.0),
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(5),
+              child: FlatButton(
+                color: mainBackgroundColor,
+                minWidth: 200,
+                height: 50,
+                textColor: Colors.white,
+                padding: EdgeInsets.all(8.0),
+                splashColor: Colors.blueAccent,
                 onPressed: () => _goGame('mix'),
                 child: Text(
                   "Misto",
@@ -194,10 +211,18 @@ class _MenuState extends State<Menu> {
   }
   void _goGame(String currentMode) {
     mode = currentMode;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-          builder: (BuildContext context) => MyHomePage(title: title)),
-    );
+    if (mode == 'online') {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+            builder: (BuildContext context) => MyOnlineGame(title: title)),
+      );
+    }
+    else {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+            builder: (BuildContext context) => MyHomePage(title: title)),
+      );
+    }
   }
   void _goSettings() {
     Navigator.of(context).push(

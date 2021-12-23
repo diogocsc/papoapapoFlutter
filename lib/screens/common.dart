@@ -33,6 +33,9 @@ bootstrapCards() async {
       print('inserted row: $id');
     }
   }
+  else if(await helper.checkPNGCards()){
+    await helper.updateAllAssetsToJPG();
+  }
 }
 
 getOurCards() async {
