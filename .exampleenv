@@ -1,0 +1,6 @@
+AUTH0_DOMAIN = YOUR AUTH0 DOMAIN HERE
+AUTH0_CLIENT_ID = YOUR AUTH0 CLIENTID HERE
+
+Rename this file to .env, and make sure you add it to gitignore.
+
+For full instructions on how to use dotenv check https://pub.dev/packages/flutter_dotenv

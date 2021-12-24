@@ -27,6 +27,9 @@
     			<array>
     				<string>ShareMedia</string>
     			</array>
+    			 <array>
+                    <string>com.papoapapo</string>
+                 </array>
     		</dict>
     		<dict/>
     	</array>

@@ -45,10 +45,14 @@ android {
     defaultConfig {
         // Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.papoapapo"
-        minSdkVersion 16
-        targetSdkVersion 29
+        minSdkVersion 18 // required for auth0 from https://auth0.com/blog/get-started-with-flutter-authentication/
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // required for auth0 from https://auth0.com/blog/get-started-with-flutter-authentication/
+        manifestPlaceholders = [
+                'appAuthRedirectScheme': 'com.papoapapo'
+        ]
     }
 
     signingConfigs {
