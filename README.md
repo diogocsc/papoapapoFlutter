@@ -5,6 +5,8 @@ The user can add its own cards in-app or sharing pictures from other apps.
 The new online version is connected to the Papo a Papo deck on https://cardx.vercel.app
 
 ## Recent Changes
+v1.0.10+10 (2022-01-02)
+* changed menu labels, cached cover image, popup at start when Internet connection is off.
 v1.0.9+9 (2021-12-24)
 * added auth0 integration and login page
 v1.0.8+8 (2021-12-23)

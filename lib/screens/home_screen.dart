@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:papoapapo/cardsStorage.dart';
@@ -79,6 +81,18 @@ class Profile extends StatelessWidget {
   }
 }
 
+
+void _showDialog(context) {
+  // dialog implementation
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text("Oops! Parece que está sem Internet"),
+      content: Text("Pode querer sair agora da aplicação"),
+      actions: <Widget>[FlatButton(child: Text("SAIR"), onPressed: ()=>SystemChannels.platform.invokeMethod('SystemNavigator.pop'))],
+    ),
+  );
+}
 /// -----------------------------------
 ///            Login Widget
 /// -----------------------------------
@@ -89,14 +103,56 @@ class Login extends StatelessWidget {
 
   const Login(this.loginAction, this.loginError);
 
+
+
+
+
+  /*getCoverImage(context){
+      try {
+        InternetAddress.lookup('google.com').then((result) {
+          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            return
+          } else {
+            _showDialog(context); // show dialog
+          }
+        }).catchError((error) {
+          _showDialog(context); // show dialog
+        });
+      } on SocketException catch (_) {
+        _showDialog(context);
+        print('not connected'); // show dialog
+      }
+  } */
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Image.network('https://www.papoapapo.com/images/capa.png', height: 300),
-        Center(
-            child: Text('Ao registar-se nesta aplicação autoriza o envio de emails ocasionais com eventos, produtos e notícias  referentes ao Papo a Papo. A qualquer momento poderá pedir para suspender o envio de emails enviando email para papoapapo2020@gmail.com')
+       // Image.network('https://www.papoapapo.com/images/capa.png', height: 300), //getCoverImage(context),
+        Container(
+          height: 300,
+        child: CachedNetworkImage(
+            progressIndicatorBuilder: (context, url, progress) => Center(
+              child: CircularProgressIndicator(
+                value: progress.progress,
+              ),
+            ),
+            imageUrl:
+            'https://www.papoapapo.com/images/capa.png',
+          ),
+        ),
+        Container(
+            width: MediaQuery.of(context).size.width*0.8,
+            margin: const EdgeInsets.all(3.0),
+            padding: const EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color:Color(0xFFF5B536),
+              borderRadius: BorderRadius.all(
+                Radius.circular(12.0),
+              ),
+            ),
+            child: Text('Ao registar-se nesta aplicação autoriza o envio de emails ocasionais com eventos, produtos e notícias referentes ao Papo a Papo. A qualquer momento poderá pedir para suspender o envio de emails enviando email para papoapapo2020@gmail.com')
         ),
         RaisedButton(
           onPressed: () {
@@ -108,6 +164,8 @@ class Login extends StatelessWidget {
       ],
     );
   }
+
+
 }
 
 /// -----------------------------------
@@ -139,7 +197,7 @@ class MenuLayout extends StatelessWidget {
             splashColor: Colors.blueAccent,
             onPressed: () => _goGame('online', context),
             child: Text(
-              "Online",
+              "Misto Online",
               style: TextStyle(fontSize: 20.0),
             ),
           ),
@@ -155,7 +213,7 @@ class MenuLayout extends StatelessWidget {
             splashColor: Colors.blueAccent,
             onPressed: () => _goGame('mix', context),
             child: Text(
-              "Misto",
+              "Misto Local",
               style: TextStyle(fontSize: 20.0),
             ),
           ),
@@ -278,7 +336,23 @@ class _MenuState extends State<Menu> {
 
   @override
   void initState() {
-    initAction();
+    Timer.run(() {
+      try {
+        InternetAddress.lookup('google.com').then((result) {
+          if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+            initAction();
+
+          } else {
+            _showDialog(context); // show dialog
+          }
+        }).catchError((error) {
+          _showDialog(context); // show dialog
+        });
+      } on SocketException catch (_) {
+        _showDialog(context);
+        print('not connected'); // show dialog
+      }
+    });
     super.initState();
     bootstrapCards();
     // For sharing images coming from outside the app while the app is in the memory
